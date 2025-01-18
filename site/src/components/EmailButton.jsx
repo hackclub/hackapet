@@ -52,7 +52,7 @@ const EmailSignup = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="email"
-          className="p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-950"
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
