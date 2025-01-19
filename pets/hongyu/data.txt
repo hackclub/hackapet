@@ -1,0 +1,4 @@
+hunger: 50
+thirst: 50
+happiness: 50
+energy: 50
