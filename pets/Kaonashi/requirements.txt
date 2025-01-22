@@ -1,0 +1,2 @@
+blinka-displayio-pygamedisplay
+pygame
