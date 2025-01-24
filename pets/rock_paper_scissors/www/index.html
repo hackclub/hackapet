@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .game-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+        }
+        input {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .hidden {
+            display: none;
+        }
+        #game-container {
+            text-align: center;
+        }
+        .player-info {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rock Paper Scissors</h1>
+        
+        <div id="join-container">
+            <div class="game-section">
+                <h2>Create New Game</h2>
+                <input type="text" id="create-name" placeholder="Your Name">
+                <button onclick="createRoom()">Create Room</button>
+            </div>
+            
+            <div class="game-section">
+                <h2>Join Game</h2>
+                <input type="text" id="join-name" placeholder="Your Name">
+                <input type="text" id="room-id" placeholder="Room ID">
+                <button onclick="joinRoom()">Join Room</button>
+            </div>
+        </div>
+        
+        <div id="game-container" class="hidden">
+            <h2>Room: <span id="room-display"></span></h2>
+            <div id="players"></div>
+            <div id="controls" class="game-section">
+                <button onclick="makeMove('rock')">Rock</button>
+                <button onclick="makeMove('paper')">Paper</button>
+                <button onclick="makeMove('scissors')">Scissors</button>
+            </div>
+            <div id="status"></div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRoom = null;
+        let playerId = null;
+        let pollInterval = null;
+
+        async function createRoom() {
+            const name = document.getElementById('create-name').value;
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/create_room', {
+                    method: 'POST',
+                    body: new URLSearchParams({ player_name: name })
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                startGame(data.room_id, data.player_id);
+            } catch (e) {
+                alert('Error creating room');
+            }
+        }
+
+        async function joinRoom() {
+            const name = document.getElementById('join-name').value;
+            const roomId = document.getElementById('room-id').value;
+            if (!name || !roomId) {
+                alert('Please enter your name and room ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/join_room', {
+                    method: 'POST',
+                    body: new URLSearchParams({ 
+                        player_name: name,
+                        room_id: roomId
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                startGame(data.room_id, data.player_id);
+            } catch (e) {
+                alert('Error joining room');
+            }
+        }
+
+        function startGame(roomId, pId) {
+            currentRoom = roomId;
+            playerId = pId;
+            document.getElementById('join-container').classList.add('hidden');
+            document.getElementById('game-container').classList.remove('hidden');
+            document.getElementById('room-display').textContent = roomId;
+            
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(pollGameState, 1000);
+        }
+
+        async function pollGameState() {
+            if (!currentRoom) return;
+            
+            try {
+                const response = await fetch(`/room/${currentRoom}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                updateGameDisplay(data);
+            } catch (e) {
+                console.error('Error polling game state:', e);
+            }
+        }
+
+        async function makeMove(choice) {
+            if (!currentRoom || !playerId) return;
+            
+            try {
+                const response = await fetch('/make_move', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        room_id: currentRoom,
+                        player_id: playerId,
+                        choice: choice
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                if (data.round_complete) {
+                    displayRoundResult(data);
+                }
+                
+                document.getElementById('controls').style.pointerEvents = 'none';
+                document.getElementById('status').textContent = 'Waiting for opponent...';
+            } catch (e) {
+                alert('Error making move');
+            }
+        }
+
+        function updateGameDisplay(gameState) {
+            const playersDiv = document.getElementById('players');
+            playersDiv.innerHTML = '';
+            
+            Object.entries(gameState.players).forEach(([id, player]) => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-info';
+                playerDiv.innerHTML = `
+                    <h3>${player.name}</h3>
+                    <p>Score: ${player.score}</p>
+                    <p>${player.has_chosen ? 'Made choice' : 'Choosing...'}</p>
+                `;
+                playersDiv.appendChild(playerDiv);
+            });
+            
+            if (Object.values(gameState.players).every(p => !p.has_chosen)) {
+                document.getElementById('controls').style.pointerEvents = 'auto';
+                document.getElementById('status').textContent = 'Make your choice!';
+            }
+        }
+
+        function displayRoundResult(data) {
+            const players = Object.values(data.players);
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                Round ${data.round} Result:<br>
+                ${players[0].name}: ${players[0].choice}<br>
+                ${players[1].name}: ${players[1].choice}<br>
+                Scores: ${players[0].name} (${players[0].score}) - ${players[1].name} (${players[1].score})
+            `;
+        }
+    </script>
+</body>
+</html>

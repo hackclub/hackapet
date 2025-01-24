@@ -69,7 +69,7 @@ cat_sprite = displayio.TileGrid(
 splash.append(cat_sprite)
 ```
 
-It's similar to displaying the forst background, but notice how we defined many more things within the cat sprite this time around. We'll be using these later - the tile sizes are used for anything relating to size (ie: collsion), `default_tile` refers to the frame it starts on, and `x` and `y` define where the sprite rests on the screen. 
+It's similar to displaying the forest background, but notice how we defined many more things within the cat sprite this time around. We'll be using these later - the tile sizes are used for anything relating to size (ie: collision), `default_tile` refers to the frame it starts on, and `x` and `y` define where the sprite rests on the screen. 
 
 Now, we just need a basic gameplay loop before running it.
 
@@ -115,7 +115,7 @@ This code checks if the left or right arrow keys are pressed, and moves the cat 
 
 In my game, I'll have fireballs that rain down that the cat has to dodge. *(based off that one animal jam minigame i loved when i was 9 haha)*
 
-I'll also add in a function that detects collsion, and also a death screen when things to collide. 
+I'll also add in a function that detects collisions, and also a death screen when things do collide. 
 
 The final game code looks like this!
 
