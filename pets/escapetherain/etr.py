@@ -14,7 +14,7 @@ splash = displayio.Group()
 display.show(splash)
 
 # Load and display the planet background
-planet_background = displayio.OnDiskBitmap("planetbackground.bmp")
+planet_background = displayio.OnDiskBitmap("planetbg.bmp")
 bg_sprite = displayio.TileGrid(planet_background, pixel_shader=planet_background.pixel_shader)
 splash.append(bg_sprite)
 
