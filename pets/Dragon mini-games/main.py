@@ -1,9 +1,8 @@
 import pygame
 import random
+import displayio
+from blinka_displayio_pygamedisplay import PyGameDisplay
 pygame.init()
-WIDTH, HEIGHT = 128, 128 
-SCALE = 7 
-SCALED_WIDTH, SCALED_HEIGHT = WIDTH * SCALE, HEIGHT * SCALE
 FPS = 60  
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -19,22 +18,111 @@ anim = 0
 animsp = 0.2 
 flappy_speed = 1.5
 pipe_gap = 40
-game_surface = pygame.Surface((WIDTH, HEIGHT))  
-screen = pygame.display.set_mode((SCALED_WIDTH, SCALED_HEIGHT))  
-font = pygame.font.Font(None, 14)
-backgrounds = {
-    "home": pygame.image.load("backgrounds/home.png"),
-    "apple_catch": pygame.image.load("backgrounds/apple_catch.png"),
-    "dino": pygame.image.load("backgrounds/dino_jump.png"),
-    "flappy": pygame.image.load("backgrounds/flappy_bird.png"),
+display = PyGameDisplay(width = 128, height = 128)
+splash = displayio.Group();
+display.show(splash)
+home = displayio.OnDiskBitmap("backgrounds/home.png")
+apple_catch = displayio.OnDiskBitmap("backgrounds/apple_catch.png")
+dino = displayio.OnDiskBitmap("backgrounds/dino_jump.png")
+flappy_bird = displayio.OnDiskBitmap("backgrounds/flappy_bird.png")
+homebg = displayio.TileGrid{
+    home,
+    pixel_shader = home.pixel_shader
 }
-sprites = {
-    "dragon_jump": pygame.image.load("sprites/dragon_jump_sheet.png"),
-    "dragon_idle": pygame.image.load("sprites/dragon_idle_sheet.png"),
-    "apple": pygame.image.load("sprites/apple.png"),
-    "basket": pygame.image.load("sprites/basket.png"),
-    "cactus": pygame.image.load("sprites/cactus.png"),
-    "pipe": pygame.image.load("sprites/pipe.png"),
+apple_catchbg = displayio.TileGrid{
+    apple_catch,
+    pixel_shader = apple_catch.pixel_shader
+}
+dinobg = displayio.TileGrid{
+    dino,
+    pixel_shader = home.dino
+}
+flappy_birdbg = displayio.TileGrid{
+    flappy_bird,
+    pixel_shader = flappy_bird.pixel_shader
+}
+dragon_jump = displayio.OnDiskBitmap("sprites/dragon_jump_sheet.png")
+dragon_idle = displayio.OnDiskBitmap("sprites/dragon_idle_sheet.png")
+apple= displayio.OnDiskBitmap("sprites/apple.png")
+basket = displayio.OnDiskBitmap("sprites/basket.png")
+cactus = displayio.OnDiskBitmap("sprites/cactus.png")
+pipe= displayio.OnDiskBitmap("sprites/pipe.png")
+dragon_jump = displayio.TileGrid(
+    dragon_jump,
+    pixel_shader = dragon_jump.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 21,
+    tile_height = 14,
+    default_tile =0,
+    x=0;
+    y=0
+}
+dragon_idle = displayio.TileGrid(
+    dragon_idle,
+    pixel_shader = dragon_idle.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 32,
+    tile_height = 32,
+    default_tile =0,
+    x=0;
+    y=0
+}
+apple = displayio.TileGrid(
+    apple,
+    pixel_shader = apple.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 16,
+    tile_height = 16,
+    default_tile =0,
+    x=0;
+    y=0
+}
+apple = displayio.TileGrid(
+    apple,
+    pixel_shader = apple.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 16,
+    tile_height = 16,
+    default_tile =0,
+    x=0;
+    y=0
+}
+basket = displayio.TileGrid(
+    basket,
+    pixel_shader = basket.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 8,
+    tile_height = 16,
+    default_tile =0,
+    x=0;
+    y=0
+}
+cactus = displayio.TileGrid(
+    cactus,
+    pixel_shader = cactus.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 8,
+    tile_height = 16,
+    default_tile =0,
+    x=0;
+    y=0
+}
+pipe = displayio.TileGrid(
+    pipe,
+    pixel_shader = pipe.pixelshader,
+    width = 1,
+    height = 1,
+    tile_width = 8,
+    tile_height = 16,
+    default_tile =0,
+    x=0;
+    y=0
 }
 for key, image in backgrounds.items():
     backgrounds[key] = pygame.transform.scale(image, (WIDTH, HEIGHT))
@@ -75,7 +163,7 @@ while running:
     elif anim >= len(dragon_jump_frames):
         anim = 0
     if state == "home":
-        game_surface.blit(backgrounds["home"], (0, 0))
+        splash.append(homebg)
         text = font.render("Press SPACE to Start!", True, WHITE)
         text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 20))
         game_surface.blit(text, text_rect)
@@ -87,7 +175,7 @@ while running:
             reset_variables()
 
     elif state == "apple_catch":
-        game_surface.blit(backgrounds["apple_catch"], (0, 0))
+        splash.append(apple_catchbg)
         game_surface.blit(sprites["basket"], basket_rect)
         if basket_rect.bottom > HEIGHT:
             basket_rect.bottom = HEIGHT
@@ -116,7 +204,7 @@ while running:
         elif misses >= 5:
             state = "home"
     elif state == "dino":
-        game_surface.blit(backgrounds["dino"], (0, 0))
+        splash.append(dino_jumpbg)
         if not jumping:
             game_surface.blit(dragon_jump_frames[0], dragon_rect) 
             if keys[pygame.K_SPACE]:
@@ -145,7 +233,7 @@ while running:
                 {"rect": sprites["pipe"].get_rect(midtop=(WIDTH + 20, random.randint(-60, -20)))}
             ]
     elif state == "flappy":
-        game_surface.blit(backgrounds["flappy"], (0, 0))
+        splash.append(flappy_birdbg)
         dragon_rect.y += 1
         if keys[pygame.K_SPACE]:
             dragon_rect.y -= 2
