@@ -1,0 +1,10 @@
+[sounds]
+bgm = true
+sfx = true
+
+[general]
+pet = 0
+map = 1
+
+[game]
+highscore = 0
