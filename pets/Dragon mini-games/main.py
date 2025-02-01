@@ -1,4 +1,5 @@
 import pygame
+import time
 import random
 import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
@@ -288,6 +289,6 @@ while running:
     scaled_surface = pygame.transform.scale(game_surface, (SCALED_WIDTH, SCALED_HEIGHT))
     screen.blit(scaled_surface, (0, 0))
     pygame.display.flip()
-    clock.tick(FPS)
+    time.sleep(0.1)
 
 pygame.quit()
