@@ -9,4 +9,9 @@ LEFT arrow key to move left
 RIGHT arrow key to move right
 Avoid oil spills🛢️ and broken bottles🪣
 Collect weed🌿 and fish🐟 to gain immunity!(2 secs per collection)
-just press left or right key to restart after gameover occurs 
+just press left or right key to restart after gameover occurs
+
+
+created by -U04GZ714R0E slack someone asked to put this
+name in slack- maximus
+
