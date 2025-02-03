@@ -1,0 +1,4 @@
+Adafruit-Blinka
+blinka-displayio-pygamedisplay
+adafruit-circuitpython-display-text
+pygame

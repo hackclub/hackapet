@@ -16,6 +16,12 @@ MinePet is a game where you control your pet (slime) and can build and break 12 
   - Force instant fall: While in air, press and hold <kbd>Button Middle</kbd> for about 20 frames
   - Select world seed: On splash screen, select <kbd>Button Left</kbd>, <kbd>Button Middle</kbd> or <kbd>Button Right</kbd> to choose seed for that button
 
+When running on desktop, the buttons are mapped as following:
+
+- <kbd>Button Left</kbd> = <kbd>A</kbd>
+- <kbd>Button Middle</kbd> = <kbd>Space</kbd>
+- <kbd>Button Right</kbd> = <kbd>D</kbd>
+
 ## World generation
 
 There are currently 4 generated features in the world:
