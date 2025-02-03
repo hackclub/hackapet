@@ -2,7 +2,10 @@ import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
 import pygame
 import time
-import random
+import os
+
+# dir path
+script_dir = os.path.dirname(__file__)
 
 # Display
 pygame.init()
@@ -11,7 +14,8 @@ splash = displayio.Group()
 display.show(splash)
 
 # Initial Plain Screen
-start = displayio.OnDiskBitmap(r"C:\Users\Briyan\Documents\hackapet\splash1.bmp")
+image_path = os.path.join(script_dir, "splash1.bmp")
+start = displayio.OnDiskBitmap(image_path)
 bg_sprite = displayio.TileGrid(
     start,
     pixel_shader=start.pixel_shader
