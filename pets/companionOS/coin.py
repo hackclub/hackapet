@@ -3,6 +3,10 @@ from blinka_displayio_pygamedisplay import PyGameDisplay
 import pygame
 import time
 import random
+import os
+
+script_dir = os.path.dirname(__file__)
+coin_img_dir = os.path.join(script_dir, "coin")
 
 # Display
 pygame.init()
@@ -11,7 +15,8 @@ splash = displayio.Group()
 display.show(splash)
 
 # Initial Plain Screen
-start = displayio.OnDiskBitmap(r"\coin\coin.bmp")
+start_path = os.path.join(coin_img_dir, "coin.bmp")
+start = displayio.OnDiskBitmap(start_path)
 bg_sprite = displayio.TileGrid(
     start,
     pixel_shader=start.pixel_shader
@@ -19,11 +24,11 @@ bg_sprite = displayio.TileGrid(
 splash.append(bg_sprite)
 
 # Update Display
-def update_dice_image(diceno):
-    dice_path = fr"\coin\coin{diceno}.bmp"
-    new_dice = displayio.OnDiskBitmap(dice_path)
+def update_coin_image(coin_side):
+    coin_path = os.path.join(coin_img_dir, f"coin{coin_side}.bmp")
+    new_coin = displayio.OnDiskBitmap(coin_path)
     splash.pop()  # Remove the old sprite
-    new_sprite = displayio.TileGrid(new_dice, pixel_shader=new_dice.pixel_shader)
+    new_sprite = displayio.TileGrid(new_coin, pixel_shader=new_coin.pixel_shader)
     splash.append(new_sprite)  # Add the new sprite
 
 # Main loop
@@ -36,8 +41,8 @@ while True:
             exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                # Roll the dice
-                diceno = random.randint(1, 4)
-                update_dice_image(diceno)
+                # Flip the coin (assuming 1 = heads, 2 = tails)
+                coin_side = random.randint(1, 2)
+                update_coin_image(coin_side)
             elif event.key == pygame.K_DOWN:
                 print("Down key pressed")
