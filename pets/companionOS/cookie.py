@@ -2,6 +2,11 @@ import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
 import pygame
 import time
+import os
+
+# Get the directory of the current script
+script_dir = os.path.dirname(__file__)
+cookie_img_dir = os.path.join(script_dir, "cookie")
 
 # Initialize the display
 pygame.init()
@@ -12,9 +17,9 @@ display.show(splash)
 # Score variable
 score = 0
 
-# initial cookie image
-cookie1_path = r"\cookie\cookie1.bmp"
-cookie2_path = r"\cookie\cookie2.bmp"
+# Initial cookie images
+cookie1_path = os.path.join(cookie_img_dir, "cookie1.bmp")
+cookie2_path = os.path.join(cookie_img_dir, "cookie2.bmp")
 cookie1 = displayio.OnDiskBitmap(cookie1_path)
 bg_sprite = displayio.TileGrid(
     cookie1,
@@ -22,10 +27,8 @@ bg_sprite = displayio.TileGrid(
 )
 splash.append(bg_sprite)
 
-
 pygame_screen = pygame.display.set_mode((128, 128))
 font = pygame.font.Font(None, 24) 
-
 
 def update_cookie_image(image_path):
     new_cookie = displayio.OnDiskBitmap(image_path)
