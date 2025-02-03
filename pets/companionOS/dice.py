@@ -3,6 +3,10 @@ from blinka_displayio_pygamedisplay import PyGameDisplay
 import pygame
 import time
 import random
+import os
+
+script_dir = os.path.dirname(__file__)
+dice_img_dir = os.path.join(script_dir, "diceimg")
 
 # Display
 pygame.init()
@@ -11,7 +15,8 @@ splash = displayio.Group()
 display.show(splash)
 
 # Initial Plain Screen
-start = displayio.OnDiskBitmap(r"\diceimg\Dice.bmp")
+start_path = os.path.join(dice_img_dir, "Dice.bmp")
+start = displayio.OnDiskBitmap(start_path)
 bg_sprite = displayio.TileGrid(
     start,
     pixel_shader=start.pixel_shader
@@ -20,7 +25,7 @@ splash.append(bg_sprite)
 
 # Update Display
 def update_dice_image(diceno):
-    dice_path = fr"\diceimg\Diceof{diceno}.bmp"
+    dice_path = os.path.join(dice_img_dir, f"Diceof{diceno}.bmp")
     new_dice = displayio.OnDiskBitmap(dice_path)
     splash.pop()  # Remove the old sprite
     new_sprite = displayio.TileGrid(new_dice, pixel_shader=new_dice.pixel_shader)
