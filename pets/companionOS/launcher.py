@@ -4,6 +4,9 @@ import pygame
 import time
 import os
 
+# dir path
+script_dir = os.path.dirname(__file__)
+
 # Display
 pygame.init()
 display = PyGameDisplay(width=128, height=128)
@@ -12,11 +15,11 @@ display.show(splash)
 
 # UI file paths
 ui_files = [
-    r"\ui\ui1.bmp",
-    r"\ui\ui2.bmp",
-    r"\ui\ui3.bmp",
-    r"\ui\ui4.bmp",
-    r"\ui\ui5.bmp",
+    os.path.join(script_dir, "ui", "ui1.bmp"),
+    os.path.join(script_dir, "ui", "ui2.bmp"),
+    os.path.join(script_dir, "ui", "ui3.bmp"),
+    os.path.join(script_dir, "ui", "ui4.bmp"),
+    os.path.join(script_dir, "ui", "ui5.bmp"),
 ]
 
 # Load Launcher
