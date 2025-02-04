@@ -22,15 +22,29 @@ bg_sprite = displayio.TileGrid(
 
 splash.append(bg_sprite)
 
-teddy_sheet = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/teddywalking!.bmp")
+# SILLY PIXEL THINGS (IM TRYING TO ORGANIZE MY CODE)
+
+teddy_idle = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/teddy_idle.bmp")
+teddy_left = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/teddywalking! left.bmp")
+teddy_right = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/teddywalking!.bmp")
+pill_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/pill.bmp")
+shoe_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/shoe.bmp")
+challah_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/challah.bmp")
+meter_empty = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter empty.bmp")
+meter_full = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter full.bmp")
+meter_quarter = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter quarter.bmp")
+meter_three_quarters = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter three quarters.bmp")
+meter_half = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter half.bmp")
+
+
 
 # Correctly declare tile_width and tile_height as integers
 tile_width = 32
 tile_height = 32
 
 teddy_sprite = displayio.TileGrid(
-    teddy_sheet,
-    pixel_shader=teddy_sheet.pixel_shader,
+    teddy_idle,
+    pixel_shader=teddy_idle.pixel_shader,
     width=1,
     height=1,
     tile_width=tile_width,
@@ -49,7 +63,7 @@ keys = pygame.key.get_pressed()
 # ADDING THE ICONS THINGIES
 food = []
 shoes = []
-pill_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/pill.bmp")
+# SPAWN FUNCTIONS
 def spawn_pill():
     x_position = random.randint(0, 128)
     y_position = 128
@@ -66,7 +80,6 @@ def spawn_pill():
     )
     splash.append(pill_sprite)
     food.append(pill_sprite)
-shoe_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/shoe.bmp")
 def spawn_shoe():
     x_position = random.randint(0,128)
     y_position = 0
@@ -93,7 +106,6 @@ win_screen = displayio.TileGrid(
     x=0,
     y=0
 )
-challah_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/challah.bmp")
 challah_sprite = displayio.TileGrid(
     challah_bitmap,
     pixel_shader=challah_bitmap.pixel_shader,
@@ -120,11 +132,7 @@ def spawn_challah():
     )
     splash.append(challah_sprite)
     food.append(challah_sprite)
-meter_empty = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter empty.bmp")
-meter_full = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter full.bmp")
-meter_quarter = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter quarter.bmp")
-meter_three_quarters = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter three quarters.bmp")
-meter_half = displayio.OnDiskBitmap("C:/Users/Nili/Downloads/meter half.bmp")
+
 meter_sprite = displayio.TileGrid(
     meter_empty,
     pixel_shader=meter_empty.pixel_shader,
@@ -147,6 +155,9 @@ last_spawn_time = time.time()
 spawn_pill()
 spawn_shoe()
 spawn_challah()
+
+
+
 # i THINK my game is gonna be like collecting pills to get points and avoiding things that take points down
 while True:
     for event in pygame.event.get():
@@ -155,14 +166,51 @@ while True:
             exit()
     keys = pygame.key.get_pressed()
     if game_over == False:
-        if keys[pygame.K_LEFT]:
-            teddy_sprite.x -= speed
         if keys[pygame.K_RIGHT]:
             teddy_sprite.x += speed
-        if keys[pygame.K_UP]:
+            splash.remove(teddy_sprite)
+            teddy_sprite = displayio.TileGrid(
+                teddy_right,
+                pixel_shader=teddy_right.pixel_shader,
+                width=1,
+                height=1,
+                tile_width=32,
+                tile_height=32,
+                x=teddy_sprite.x,
+                y=teddy_sprite.y
+            )
+            splash.append(teddy_sprite)
+        elif keys[pygame.K_LEFT]:
+            teddy_sprite.x -= speed
+            splash.remove(teddy_sprite)
+            teddy_sprite = displayio.TileGrid(
+                teddy_left,
+                pixel_shader=teddy_left.pixel_shader,
+                width=1,
+                height=1,
+                tile_width=32,
+                tile_height=32,
+                x=teddy_sprite.x,
+                y=teddy_sprite.y
+            )
+            splash.append(teddy_sprite)
+        elif keys[pygame.K_UP]:
             teddy_sprite.y -=  speed
             time.sleep(0.05)
             teddy_sprite.y += speed
+            splash.remove(teddy_sprite)
+            teddy_sprite = displayio.TileGrid(
+                teddy_idle,
+                pixel_shader=teddy_idle.pixel_shader,
+                width=1,
+                height=1,
+                tile_width=32,
+                tile_height=32,
+                x=teddy_sprite.x,
+                y=teddy_sprite.y
+            )
+            splash.append(teddy_sprite)
+
         for pill in food:
             pill.y += 1
             if pill.y > display.height:
@@ -190,7 +238,7 @@ while True:
                 splash.remove(challah)
                 food.remove(challah)
                 full += 1
-        if full == 8:
+        if full >= 8:
             splash.remove(meter_sprite)
             meter_sprite = displayio.TileGrid(
                 meter_full,
@@ -202,9 +250,9 @@ while True:
                 x=0,
                 y=0
             )
-            display.show(win_screen)
-            time.sleep(3)
             full = 0
+            splash.append(win_screen)
+        
             game_over = True
         elif full == 2:
             splash.remove(meter_sprite)
