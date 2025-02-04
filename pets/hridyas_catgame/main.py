@@ -5,8 +5,11 @@ import time
 
 class PetGame:
     def __init__(self):
+        pygame.init()
         self.display = PyGameDisplay(width=128, height=128)
         pygame.display.set_caption("Virtual Pet")
+        
+        self.screen = pygame.display.get_surface()
         
         self.main_group = displayio.Group()
         self.display.show(self.main_group)
@@ -30,13 +33,8 @@ class PetGame:
         }
         self.state = "idle"
         self.is_sleeping = False
-        self.last_update = time.monotonic()
-        
-        pygame.font.init()
-        self.font = pygame.font.Font(None, 12)
-        self.screen = pygame.display.get_surface()
-        self.overlay = pygame.Surface((128, 128), pygame.SRCALPHA)
-        self.pre_render_stats()
+        self.last_stats_update = time.monotonic()
+        self.stats_update_interval = 5.0
 
     def _create_background(self):
         bg_bitmap = displayio.Bitmap(128, 128, 1)
@@ -97,43 +95,25 @@ class PetGame:
             print(f"Error creating UI: {e}")
             raise
 
-    def pre_render_stats(self):
-        self.overlay.fill((0, 0, 0, 0))
-        
-        pygame.draw.rect(self.overlay, (0, 0, 0, 150), (0, 0, 80, 65))
-        
-        stats_y = 5
-        for stat, value in self.stats.items():
-            text_surface = self.font.render(f"{stat[:4]}: {int(value)}", True, (255, 255, 255))
-            self.overlay.blit(text_surface, (5, stats_y))
-            stats_y += 15
-            
-        label_positions = [(100, 10), (100, 36), (100, 62), (100, 88)]
-        for pos, label in zip(label_positions, ["FOOD", "MED", "SLEEP", "PLAY"]):
-            pygame.draw.rect(self.overlay, (0, 0, 0, 150), (pos[0], pos[1], 30, 15))
-            text_surface = self.font.render(label, True, (255, 255, 255))
-            self.overlay.blit(text_surface, (pos[0] + 2, pos[1] + 2))
-
     def update_stats(self):
         current_time = time.monotonic()
-        if current_time - self.last_update > 1:
+        if current_time - self.last_stats_update > self.stats_update_interval:
             if not self.is_sleeping:
-                self.stats["hunger"] = max(0, self.stats["hunger"] - 1)
-                self.stats["happiness"] = max(0, self.stats["happiness"] - 0.5)
-                self.stats["energy"] = max(0, self.stats["energy"] - 1)
+                self.stats["hunger"] = max(0, self.stats["hunger"] - 2)
+                self.stats["happiness"] = max(0, self.stats["happiness"] - 1)
+                self.stats["energy"] = max(0, self.stats["energy"] - 2)
                 
                 if self.stats["hunger"] < 30:
-                    self.stats["health"] = max(0, self.stats["health"] - 1)
+                    self.stats["health"] = max(0, self.stats["health"] - 2)
                 
                 if self.stats["energy"] < 20:
-                    self.stats["health"] = max(0, self.stats["health"] - 0.5)
+                    self.stats["health"] = max(0, self.stats["health"] - 1)
             else:
-                self.stats["energy"] = min(100, self.stats["energy"] + 2)
+                self.stats["energy"] = min(100, self.stats["energy"] + 4)
                 if self.stats["energy"] >= 100:
                     self.is_sleeping = False
                     
-            self.last_update = current_time
-            self.pre_render_stats()
+            self.last_stats_update = current_time
 
     def update_state(self):
         if self.stats["health"] <= 0:
@@ -166,13 +146,16 @@ class PetGame:
                     self.stats["energy"] = max(0, self.stats["energy"] - 10)
                 elif label == "SLEEP":
                     self.is_sleeping = not self.is_sleeping
-                self.pre_render_stats()
 
     def run(self):
         clock = pygame.time.Clock()
         running = True
+        self.display.refresh()
+        pygame.display.flip()
         
         while running:
+            time.sleep(0.1)
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -192,13 +175,8 @@ class PetGame:
                     y=48
                 )
                 self.pet_group.append(new_pet)
-
-            self.display.refresh()
-            
-            self.screen.blit(self.overlay, (0, 0))
-            
-            pygame.display.flip()
-            time.sleep(0.1)
+                self.display.refresh()
+                pygame.display.flip()
 
         pygame.quit()
 
