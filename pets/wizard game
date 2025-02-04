@@ -1,0 +1,192 @@
+import random
+
+import pygame
+
+# Screen settings
+WIDTH, HEIGHT = 128, 128
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # Set to fullscreen
+clock = pygame.time.Clock()
+
+# Load sprites
+wizard_left = pygame.image.load("gifs/walkingleft.gif")
+wizard_right = pygame.image.load("gifs/walkingright.gif")
+slime = pygame.image.load("gifs/slime.gif")
+slime2 = pygame.image.load("gifs/slime2.gif")
+skeleton = pygame.image.load("gifs/skeleton.gif")
+skeleton2 = pygame.image.load("gifs/skeleton(1).gif")
+catthing = pygame.image.load("gifs/New Piskel.gif")
+encounter_icon = pygame.image.load("gifs/randomencountericon.gif")
+mana_orb = pygame.image.load("gifs/+mp.gif")
+close_up_background = pygame.image.load("gifs/close up.gif")
+idle_animation = pygame.image.load("gifs/idleanimation.gif")
+fire_spell = pygame.image.load("gifs/fireball.gif")
+shield_spell = pygame.image.load("gifs/sheild.gif")
+heal_spell = pygame.image.load("gifs/cure.gif")
+lightning_spell = pygame.image.load("gifs/lightningbolt.gif")
+ice_spell = pygame.image.load("gifs/ice.gif")
+
+# Load HP and MP visualization sprites
+hp_sprites = [pygame.image.load(f"gifs/{i}hp.gif") for i in range(11)]
+mp_sprites = [pygame.image.load(f"gifs/{i}mp.gif") for i in range(11)]
+
+# Character settings
+wizard_x, wizard_y = WIDTH // 2, HEIGHT // 2
+wizard_direction = "right"
+speed = 2
+wizard_hp = 10
+mana = 10
+
+# Enemy settings
+enemy_hp = 10  # Set initial HP for enemies
+
+# Object and encounter setup
+objects = [(30, 30), (100, 50)]
+encounters = []
+mana_orbs = []
+enemy_sprites = [slime, slime2, skeleton, skeleton2, catthing]
+enemy = None
+enemy_pos = None
+encounter_active = False
+
+# Create a dictionary to map enemy sprites to names
+enemy_names = {
+    slime: "Purple Slime",
+    slime2: "Violet Slime",
+    skeleton: "Purple Skeleton",
+    skeleton2: "Green Skeleton",
+    catthing: "Wild Cat",
+}
+
+# Spell selection setup
+spells = [
+    fire_spell,
+    shield_spell,
+    heal_spell,
+    lightning_spell,
+    ice_spell,
+]
+selected_spell = 0
+spell_x = WIDTH // 2 - spells[0].get_width() // 2
+spell_y = HEIGHT // 2 - spells[0].get_height() // 2
+
+# Timers for adding new mana orbs and encounters
+ADD_OBJECT_EVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(ADD_OBJECT_EVENT, random.randint(15000, 20000))
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == ADD_OBJECT_EVENT:
+            encounters.append(
+                (random.randint(0, WIDTH - 1), random.randint(0, HEIGHT - 1))
+            )
+            mana_orbs.append(
+                (random.randint(0, WIDTH - 1), random.randint(0, HEIGHT - 1))
+            )
+
+    # Handle key presses for spell selection
+    if encounter_active:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                selected_spell = (selected_spell - 1) % len(spells)
+            elif event.key == pygame.K_RIGHT:
+                selected_spell = (selected_spell + 1) % len(spells)
+
+    # Handle spell casting
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_SPACE:
+            # Cast the selected spell
+            if selected_spell == 0 or selected_spell == 3 or selected_spell == 4:
+                # Fire, Lightning, Ice
+                enemy_hp -= 2  # Deal 2 damage
+            elif selected_spell == 1:
+                # Shield
+                wizard_hp = 10  # Set HP to maximum (10)
+            elif selected_spell == 2:
+                # Heal
+                wizard_hp = min(wizard_hp + 4, 10)  # Heal up to 4 HP, max 10
+
+    # Enemy attack after wizard's turn
+    wizard_hp -= random.randint(1, 3)  # Enemy deals random damage
+    encounter_active = False
+
+    # Check for encounters
+    for enc in encounters:
+        if abs(wizard_x - enc[0]) < 10 and abs(wizard_y - enc[1]) < 10:
+            enemy = random.choice(enemy_sprites)
+            enemy_pos = enc
+            print(f"Uh oh! It's an {enemy_names[enemy]}!")
+            encounter_active = True
+            break
+
+    # Handle player movement during normal gameplay
+    if not encounter_active:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            wizard_x -= speed
+            wizard_direction = "left"
+        if keys[pygame.K_RIGHT]:
+            wizard_x += speed
+            wizard_direction = "right"
+        if keys[pygame.K_UP]:
+            wizard_y -= speed
+        if keys[pygame.K_DOWN]:
+            wizard_y += speed
+
+    # Draw the game elements
+    screen.fill((0, 0, 0))  # Clear the screen
+
+    # Draw the wizard based on direction
+    if wizard_direction == "right":
+        screen.blit(wizard_right, (wizard_x, wizard_y))
+    else:
+        screen.blit(wizard_left, (wizard_x, wizard_y))
+
+    # Draw mana orbs
+    for orb in mana_orbs:
+        screen.blit(mana_orb, orb)
+
+    # Draw encounter icons
+    for enc in encounters:
+        screen.blit(encounter_icon, enc)
+
+    # Handle encounter logic
+    if encounter_active:
+        screen.blit(close_up_background, (0, 0))
+        screen.blit(idle_animation, (wizard_x, wizard_y))  # Show idle animation
+        screen.blit(
+            spells[selected_spell], (spell_x, spell_y)
+        )  # Draw the selected spell
+
+    # Draw HP and MP visualization
+    wizard_hp = max(0, min(wizard_hp, 10))  # Ensure HP is between 0 and 10
+    if 0 <= wizard_hp < len(hp_sprites):
+        screen.blit(
+            hp_sprites[wizard_hp],
+            (
+                WIDTH - hp_sprites[wizard_hp].get_width(),
+                HEIGHT - hp_sprites[wizard_hp].get_height() - 12,
+            ),
+        )
+    else:
+        print(f"Invalid wizard_hp value: {wizard_hp}")
+    screen.blit(
+        mp_sprites[mana],
+        (
+            WIDTH - mp_sprites[mana].get_width(),
+            HEIGHT - mp_sprites[mana].get_height(),
+        ),
+    )
+
+    # Draw enemy if encountered
+    if enemy:
+        screen.blit(enemy, enemy_pos)
+        screen.blit(enemy, (WIDTH - enemy.get_width(), 0))
+
+    pygame.display.flip()
+    clock.tick(30)
+
+pygame.quit()
