@@ -137,15 +137,20 @@ class PetGame:
         x, y = pos
         for label, rect in self.buttons.items():
             if rect.collidepoint(x, y):
-                if label == "FOOD" and not self.is_sleeping:
-                    self.stats["hunger"] = min(100, self.stats["hunger"] + 30)
-                elif label == "MED" and not self.is_sleeping:
-                    self.stats["health"] = min(100, self.stats["health"] + 20)
-                elif label == "PLAY" and not self.is_sleeping:
-                    self.stats["happiness"] = min(100, self.stats["happiness"] + 25)
-                    self.stats["energy"] = max(0, self.stats["energy"] - 10)
-                elif label == "SLEEP":
-                    self.is_sleeping = not self.is_sleeping
+                self.activate_button(label)
+
+    def activate_button(self, label):
+        if self.state == "dead":
+            return
+        if label == "FOOD" and not self.is_sleeping:
+            self.stats["hunger"] = min(100, self.stats["hunger"] + 30)
+        elif label == "MED" and not self.is_sleeping:
+            self.stats["health"] = min(100, self.stats["health"] + 20)
+        elif label == "PLAY" and not self.is_sleeping:
+            self.stats["happiness"] = min(100, self.stats["happiness"] + 25)
+            self.stats["energy"] = max(0, self.stats["energy"] - 10)
+        elif label == "SLEEP":
+            self.is_sleeping = not self.is_sleeping
 
     def run(self):
         clock = pygame.time.Clock()
@@ -161,6 +166,15 @@ class PetGame:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_input(event.pos)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        self.activate_button("FOOD")
+                    elif event.key == pygame.K_2:
+                        self.activate_button("MED")
+                    elif event.key == pygame.K_3:
+                        self.activate_button("SLEEP")
+                    elif event.key == pygame.K_4:
+                        self.activate_button("PLAY")
 
             self.update_stats()
             new_state = self.update_state()
