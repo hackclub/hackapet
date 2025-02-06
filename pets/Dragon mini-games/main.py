@@ -112,19 +112,19 @@ pipe = displayio.TileGrid(
 )
 
 sprites = {
-    "dragon_jump": pygame.image.load("/sprites/dragon_jump_sheet.png"),
-    "dragon_idle": pygame.image.load("/sprites/dragon_idle_sheet.png"),
-    "apple": pygame.image.load("/sprites/apple.png"),
-    "basket": pygame.image.load("/sprites/basket.png"),
-    "cactus": pygame.image.load("/sprites/cactus.png"),
-    "pipe": pygame.image.load("/sprites/pipe.png")
+    "dragon_jump": pygame.image.load("sprites/dragon_jump_sheet.png"),
+    "dragon_idle": pygame.image.load("sprites/dragon_idle_sheet.png"),
+    "apple": pygame.image.load("sprites/apple.png"),
+    "basket": pygame.image.load("sprites/basket.png"),
+    "cactus": pygame.image.load("sprites/cactus.png"),
+    "pipe": pygame.image.load("sprites/pipe.png")
 }
 
 backgrounds = {
-    "home": pygame.image.load("/backgrounds/home.png"),
-    "apple_catch": pygame.image.load("/backgrounds/apple_catch.png"),
-    "dino_jump": pygame.image.load("/backgrounds/dino_jump.png"),
-    "flappy_bird": pygame.image.load("/backgrounds/flappy_bird.png")
+    "home": pygame.image.load("backgrounds/home.png"),
+    "apple_catch": pygame.image.load("backgrounds/apple_catch.png"),
+    "dino_jump": pygame.image.load("backgrounds/dino_jump.png"),
+    "flappy_bird": pygame.image.load("backgrounds/flappy_bird.png")
 }
 
 for key, image in backgrounds.items():
