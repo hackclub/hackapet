@@ -37,12 +37,12 @@ apple_catchbg = displayio.TileGrid(apple_catch, pixel_shader=apple_catch.pixel_s
 dinobg = displayio.TileGrid(dino, pixel_shader=dino.pixel_shader)
 flappy_birdbg = displayio.TileGrid(flappy_bird, pixel_shader=flappy_bird.pixel_shader)
 
-dragon_jump = displayio.OnDiskBitmap("/sprites/dragon_jump_sheet.png")
-dragon_idle = displayio.OnDiskBitmap("/sprites/dragon_idle_sheet.png")
-apple = displayio.OnDiskBitmap("/sprites/apple.png")
-basket = displayio.OnDiskBitmap("/sprites/basket.png")
-cactus = displayio.OnDiskBitmap("/sprites/cactus.png")
-pipe = displayio.OnDiskBitmap("/sprites/pipe.png")
+dragon_jump = displayio.OnDiskBitmap("sprites/dragon_jump_sheet.png")
+dragon_idle = displayio.OnDiskBitmap("sprites/dragon_idle_sheet.png")
+apple = displayio.OnDiskBitmap("sprites/apple.png")
+basket = displayio.OnDiskBitmap("sprites/basket.png")
+cactus = displayio.OnDiskBitmap("sprites/cactus.png")
+pipe = displayio.OnDiskBitmap("sprites/pipe.png")
 
 dragon_jump = displayio.TileGrid(
     dragon_jump,
