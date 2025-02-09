@@ -13,7 +13,7 @@ display = PyGameDisplay(width=128, height=128)
 splash = displayio.Group()
 display.show(splash)
 
-forest_background = displayio.OnDiskBitmap("C:/Users/Nili/Pictures/forestbackground.bmp")
+forest_background = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/forestbackground.bmp")
 
 bg_sprite = displayio.TileGrid(
     forest_background, 
@@ -52,6 +52,7 @@ food = []
 shoes = []
 pill_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/pill.bmp")
 shoe_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/shoe.bmp")
+challah_bitmap = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/challah.bmp")
 
 def spawn_pill():
     x_position = random.randint(0, display.width - pill_bitmap.width)
@@ -69,6 +70,22 @@ def spawn_pill():
     )
     splash.append(pill_sprite)
     food.append(pill_sprite)
+def spawn_challah():
+    x_position = random.randint(0, display.width - pill_bitmap.width)
+    y_position = random.randint(0, 50)
+    challah_sprite = displayio.TileGrid(
+        challah_bitmap,
+        pixel_shader=challah_bitmap.pixel_shader,
+        width=1,
+        height=1,
+        tile_width=16,
+        tile_height=16,
+        default_tile=0,
+        x=random.randint(0, display.width - 16),
+        y=random.randint(0, display.height - 16),
+    )
+    splash.append(challah_sprite)
+    food.append(challah_sprite)
 
 def spawn_shoe():
     x_position = random.randint(0, display.width - shoe_bitmap.width)
@@ -90,6 +107,7 @@ def spawn_shoe():
 # Call spawn_pill and spawn_shoe to spawn them initially
 spawn_pill()
 spawn_shoe()
+spawn_challah
 full = 0
 meter_empty = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/meter empty.bmp")
 meter_full = displayio.OnDiskBitmap("C:/Users/Nili/OneDrive/silly_dog/meter full.bmp")
@@ -121,6 +139,7 @@ def check_collision(sprite1, sprite2):
 last_spawn_time = time.time()
 spawn_pill()
 spawn_shoe()
+spawn_challah()
 
 while True:
     try:
