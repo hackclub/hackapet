@@ -7,6 +7,8 @@ im still working on improving the game so it can reach a stage where its actuall
 <br>
 btw, setting up circuitpython on windows was a PAIN because there were so many installations that were all over the place + running the code on the vscode terminal just didn't work and we had to use windows powershell for a few steps and the command prompt for others.
 
+NOTE: this is still a wip because i accidentally created the game in pygame initially and am now switching over to circuitpython !!!
+
 ## controls 
 - left – move left <br>
 - right – move right <br>
