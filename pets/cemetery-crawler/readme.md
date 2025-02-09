@@ -1,7 +1,11 @@
-# cemetery crawler !
+# cemetery crawler
 cemetery crawler is my submission for hack club's hackapet ysws. it's a small pixel-art arcade game that's set in the abandoned cemetery on a dimly lit night. my "pet" is a grim reaper present in the cemetery and the player is supposed to control him and **collect wandering souls** while **avoiding vengeful spirits.**
+<br><br>
+im still working on improving the game so it can reach a stage where its actually enjoyable for ppl but rn here's what the game should look like:
 
 ![image](https://github.com/user-attachments/assets/f813879e-275c-46cc-b8be-7e59e7769748)
+<br>
+btw, setting up circuitpython on windows was a PAIN because there were so many installations that were all over the place + running the code on the vscode terminal just didn't work and we had to use windows powershell for a few steps and the command prompt for others.
 
 ## controls 
 - left – move left <br>
