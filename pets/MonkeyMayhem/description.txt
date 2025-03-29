@@ -1,0 +1,16 @@
+Monkey Mayhem is a fast-paced arcade game where you control a monkey trying to catch bananas while dodging rotten ones. 
+As the game progresses, the bananas fall faster, making survival more challenging. 
+Your goal is to collect as many bananas as possible while keeping your hearts intact. 
+Every 10 points scored increases the banana speed by 10%, adding to the intensity. 
+The game starts only when you press the spacebar, allowing you to get ready before the chaos begins. 
+If you lose all your hearts, the screen goes black, and you must press space to restart with a fresh game.
+
+Rules:
+-Move the monkey left and right using the arrow keys.
+-Catch normal and super bananas to increase your score.
+-Avoid rotten bananas—they reduce your hearts.
+-Every 10 points scored increases the banana speed by 10%.
+-If your hearts reach zero, the game ends.
+-Press the spacebar to start the game or restart after a game over.
+  
+Monkey Mayhem tests your reflexes and endurance in an exciting challenge that keeps getting harder the longer you survive. 

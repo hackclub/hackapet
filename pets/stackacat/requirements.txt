@@ -1,0 +1,5 @@
+pygame
+blinka-displayio-pygamedisplay
+adafruit-circuitpython-display-text
+adafruit-circuitpython-imageload
+adafruit-circuitpython-bitmap-font

@@ -1,0 +1,20 @@
+[project]
+name = "colourbounce"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "adafruit-blinka-displayio==0.11.1",
+    "adafruit-circuitpython-display-text==3.2.2",
+    "blinka_displayio_pygamedisplay==2.4.0",
+    "pygame==2.6.1",
+]
+
+
+[project.scripts]
+colourbounce = "colourbounce.__main__:start"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

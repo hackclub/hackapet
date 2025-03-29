@@ -11,6 +11,7 @@ display = PyGameDisplay(width=128, height=128)
 splash = displayio.Group()
 display.show(splash)
 
+
 forest_background = displayio.OnDiskBitmap("forestbackground.bmp")
 bg_sprite = displayio.TileGrid(forest_background, pixel_shader=forest_background.pixel_shader)
 splash.append(bg_sprite)
@@ -37,6 +38,8 @@ splash.append(cat_sprite)
 fireball_bitmap = displayio.OnDiskBitmap("fireball.bmp")
 
 fireballs = []
+
+
 
 def spawn_fireball():
     x_position = random.randint(0, display.width - fireball_bitmap.width)
