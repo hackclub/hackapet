@@ -9,6 +9,16 @@ import random
 import sys
 import os
 
+'''
+#################################################
+Space Pet 14
+heavily inspired by Space Station 13/14
+developed by spacevini8
+In loving memory of my sanity
+version 1.1β
+#################################################
+'''
+
 pygame.init()
 display = PyGameDisplay(width=128, height=128)
 splash = displayio.Group()
@@ -212,24 +222,26 @@ erebus_sprite = displayio.TileGrid(
 
 splash.append(erebus_sprite)
 
-#food
-#x = 96
-#y = 64
-#door_1
-#x = 96
-#Y = 96
-#door_2
-#x = 0
-#Y = 96
-#AME
-#x = 0
-#Y = 64
-#Singulo
-#x = 0
-#Y = 32
-#solar
-#x = 0
-#Y = 0
+'''
+food
+x = 96
+y = 64
+door_1
+x = 96
+Y = 96
+door_2
+x = 0
+Y = 96
+AME
+x = 0
+Y = 64
+Singulo
+x = 0
+Y = 32
+solar
+x = 0
+Y = 0
+'''
 
 #here be warnings
 game_over = False
@@ -278,6 +290,44 @@ splash.append(round_score_label)
 
 round_label = label.Label(font, text=f"round: {game_round}", color=0xFFFFFF, x=35, y=74)
 splash.append(round_label)
+
+def handle_warning(warning_flag, warning_sprite, normal_sprite, control_menu_sprite, penalty_flag, erebus_x, erebus_y):
+    global menu_open, score, score_round_increment, score_penalty
+
+    if warning_flag:
+        splash.append(warning_sprite)
+        if normal_sprite in splash:
+            splash.remove(normal_sprite)
+        if not penalty_flag:
+            score_round_increment -= score_penalty
+            penalty_flag = True
+    else:
+        if warning_sprite in splash:
+            splash.remove(warning_sprite)
+        if normal_sprite not in splash:
+            splash.append(normal_sprite)
+        if erebus_sprite in splash:
+            splash.remove(erebus_sprite)
+        if erebus_sprite not in splash:
+            splash.append(erebus_sprite)
+
+    if erebus_sprite.x == erebus_x and erebus_sprite.y == erebus_y and warning_flag:
+        if not menu_open:
+            splash.append(control_menu_sprite)
+        menu_open = True
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+            if control_menu_sprite in splash:
+                splash.remove(control_menu_sprite)
+            if warning_sprite in splash:
+                splash.remove(warning_sprite)
+            splash.append(normal_sprite)
+            warning_flag = False
+            menu_open = False
+            penalty_flag = False
+            score += score_increment
+            score_round_increment += score_penalty
+
+    return warning_flag, penalty_flag
 
 while True:
     for event in pygame.event.get():
@@ -390,12 +440,14 @@ while True:
             warning_solar = True
             #score_round_increment -= score_penalty
 
-    # food
-    # btw, that's not rice, 
-    # it's cloth, 
-    # because that's what moths eat,
-    # in this game,
-    # and Erebus is a moth
+    '''
+    food
+    btw, that's not rice, 
+    it's cloth, 
+    because that's what moths eat,
+    in this game,
+    and Erebus is a moth
+    '''
 
     if erebus_sprite.x == 96 and erebus_sprite.y == 64 and hunger >= 1 and ate == False and hunger >= 30 and score >= food_price:
         hunger -= hunger_increment
@@ -410,6 +462,9 @@ while True:
         print ("Score: ", score)
         ate = True
 
+    # OLD CODE, DO NOT USE
+
+    '''
     # door_1
 
     if warning_door_1 == True:
@@ -589,6 +644,29 @@ while True:
                 penalty_solar = False
                 score += score_increment
                 score_round_increment += score_penalty
+    '''
+
+    # OLD CODE WARNING ends here, keep moving citizen
+
+    warning_door_1, penalty_door_1 = handle_warning(
+    warning_door_1, warning_door_1_sprite, door_1_sprite, door_control_menu_sprite, penalty_door_1, 96, 96
+    )
+
+    warning_door_2, penalty_door_2 = handle_warning(
+        warning_door_2, warning_door_2_sprite, door_2_sprite, door_control_menu_sprite, penalty_door_2, 0, 96
+    )
+
+    warning_AME, penalty_AME = handle_warning(
+        warning_AME, AME_warning_sprite, AME_sprite, AME_control_menu_sprite, penalty_AME, 0, 64
+    )
+
+    warning_Singulo, penalty_Singulo = handle_warning(
+        warning_Singulo, singulo_warning_sprite, singulo_sprite, singulo_control_menu_sprite, penalty_Singulo, 0, 32
+    )
+
+    warning_solar, penalty_solar = handle_warning(
+        warning_solar, solar_warning_sprite, solar_sprite, solar_control_menu_sprite, penalty_solar, 0, 0
+    )
 
     # why is it crashing ffs
     # fixed it, I am literally a god
